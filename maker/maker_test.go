@@ -253,3 +253,12 @@ type MyInterface interface {
 
 	assert.Equal(t, expected, string(b))
 }
+
+func TestMakeInterface_2(t *testing.T) {
+	got, err := Make([]string{"./testdata/src.go"}, "PeopleRepo", "", "another", "IPeopleRepo", "", true, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var want []byte
+	assert.Equal(t, string(want), string(got))
+}

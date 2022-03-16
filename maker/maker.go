@@ -91,13 +91,16 @@ func FormatFieldList(src []byte, fl *ast.FieldList, pkgName string) []string {
 	if fl == nil {
 		return nil
 	}
+	log.Printf("pkgName=%s", pkgName)
 	var parts []string
 	for _, l := range fl.List {
 		names := make([]string, len(l.Names))
 		for i, n := range l.Names {
 			names[i] = n.Name
 		}
+		log.Printf("type expr=%#v", l.Type)
 		t := string(src[l.Type.Pos()-1 : l.Type.End()-1])
+		log.Printf("type=%s", t)
 
 		regexString := fmt.Sprintf(`(\*|\(|\s|^)%s\.`, regexp.QuoteMeta(pkgName))
 		t = regexp.MustCompile(regexString).ReplaceAllString(t, "$1")
@@ -175,12 +178,15 @@ func ParseStruct(src []byte, structName string, copyDocs bool, copyTypeDocs bool
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	log.Printf("current package=%#v", a.Name.Obj)
 
 	for _, i := range a.Imports {
 		if i.Name != nil {
-			imports = append(imports, fmt.Sprintf("%s %s", i.Name.String(), i.Path.Value))
+			i2 := fmt.Sprintf("%s %s", i.Name.String(), i.Path.Value)
+			imports = append(imports, i2)
 		} else {
-			imports = append(imports, fmt.Sprintf("%s", i.Path.Value))
+			i2 := i.Path.Value
+			imports = append(imports, i2)
 		}
 	}
 
